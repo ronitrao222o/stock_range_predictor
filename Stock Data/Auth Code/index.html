@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stock Deviation Viewer</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Basic autocomplete dropdown styles */
+    #autocomplete-list {
+      position: absolute;
+      border: 1px solid #d4d4d4;
+      border-bottom: none;
+      border-top: none;
+      z-index: 99;
+      top: 100%;
+      left: 0;
+      right: 0;
+      max-height: 200px;
+      overflow-y: auto;
+      background: white;
+    }
+    #autocomplete-list div {
+      padding: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid #d4d4d4;
+    }
+    #autocomplete-list div:hover {
+      background-color: #e9e9e9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Today's Stock Range Finder</h1>
+
+    <!-- Login Form -->
+    <div id="login-container">
+      <form id="login-form">
+        <input type="email" id="login-email" placeholder="Email" required />
+        <input type="password" id="login-password" placeholder="Password" required />
+        <button type="submit">Login</button>
+      </form>
+    </div>
+
+    <!-- Logout Button -->
+    <button id="logout-btn" style="display:none;">Logout</button>
+
+    <!-- Credit Display -->
+    <p id="credits-display" style="display:none;">Credits: --</p>
+    <p id="credit-status" style="color: green; margin-top: 5px; display: none;"></p>
+
+    <!-- Stock Symbol Input -->
+<form id="symbol-form" style="display:none; position: relative;">
+  <label for="symbol">Enter NSE Stock Symbol:</label>
+  <input type="text" id="symbol" name="symbol" required placeholder="e.g., INFY" autocomplete="off" />
+  <div id="autocomplete-list" class="autocomplete-items"></div>
+  <button type="submit">Fetch Data</button>
+</form>
+
+
+    <!-- Output Area -->
+    <div id="stock-data" class="card">
+      Please log in to view today's trading range.
+    </div>
+  </div>
+
+  <!-- Firebase logic -->
+  <script type="module" src="script.js"></script>
+</body>
+</html>

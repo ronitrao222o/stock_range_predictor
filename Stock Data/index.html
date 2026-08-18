@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stock Deviation Viewer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Today's Stock Range Finder</h1>
+
+    <!-- Symbol Input Form -->
+    <form id="symbol-form">
+      <label for="symbol">Enter NSE Stock Symbol:</label>
+      <input type="text" id="symbol" name="symbol" required placeholder="e.g., INFY" />
+      <button type="submit">Fetch Data</button>
+    </form>
+
+    <!-- Output Area -->
+    <div id="stock-data" class="card">
+      Please enter a symbol to view today's trading range.
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

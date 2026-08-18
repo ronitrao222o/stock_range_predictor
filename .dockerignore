@@ -1,0 +1,39 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Jupyter notebooks (if any)
+*.ipynb
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Cache and compiled files
+*.egg-info/
+.eggs/
+*.bak
+.cache/
+.nsehistory-stock/
+
+# Git
+.git/
+.gitignore
+
+# VSCode or IDE settings
+.vscode/
+.idea/
+
+# Docker-related
+Dockerfile
+docker-compose.yml
