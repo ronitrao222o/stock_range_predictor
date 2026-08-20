@@ -85,6 +85,8 @@ async def std_deviation(
             "three_sdl": three_sdl
         }
 
+    except HTTPException:
+        raise
     except Exception as e:
         print(f"Error in std_deviation endpoint: {e}")
         traceback.print_exc()
