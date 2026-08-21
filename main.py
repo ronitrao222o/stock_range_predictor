@@ -12,6 +12,10 @@ app = FastAPI(
     version="1.2.0"
 )
 
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
 # ✅ Add this middleware to enable CORS
 app.add_middleware(
     CORSMiddleware,
