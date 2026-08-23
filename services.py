@@ -1,12 +1,32 @@
 from datetime import date, timedelta
+import re
+
+from fastapi import HTTPException
 from jugaad_data.nse import stock_df
 import pandas as pd
 
+VALID_SYMBOL_PATTERN = re.compile(r"^[A-Z0-9&-]+$")
+
+
+def validate_stock_symbol(symbol: str) -> str:
+    normalized_symbol = symbol.strip().upper()
+    if not normalized_symbol:
+        raise HTTPException(status_code=400, detail="Stock symbol cannot be empty.")
+
+    if not VALID_SYMBOL_PATTERN.fullmatch(normalized_symbol):
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid stock symbol format. Use letters, numbers, '&', or '-'."
+        )
+
+    return normalized_symbol
+
 def get_previous_trading_day_ohlc(symbol: str):
+    symbol = validate_stock_symbol(symbol)
     today = date.today()
     start = today - timedelta(days=10)
 
-    df = stock_df(symbol=symbol.upper(), from_date=start, to_date=today, series="EQ")
+    df = stock_df(symbol=symbol, from_date=start, to_date=today, series="EQ")
     if df.empty:
         return None
 
@@ -23,7 +43,7 @@ def get_previous_trading_day_ohlc(symbol: str):
     prev = prev_rows.iloc[0]
 
     return {
-        "symbol": symbol.upper(),
+        "symbol": symbol,
         "date": prev_date.strftime('%Y-%m-%d IST'),
         "open": prev['OPEN'],
         "high": prev['HIGH'],
@@ -32,10 +52,11 @@ def get_previous_trading_day_ohlc(symbol: str):
     }
 
 def get_last_n_trading_days_ohlc(symbol: str, n: int = 22):  # <-- Default to 22
+    symbol = validate_stock_symbol(symbol)
     today = date.today()
     start = today - timedelta(days=n + 10)  # <-- buffer for weekends/holidays
 
-    df = stock_df(symbol=symbol.upper(), from_date=start, to_date=today, series="EQ")
+    df = stock_df(symbol=symbol, from_date=start, to_date=today, series="EQ")
     if df.empty:
         return None
 
@@ -58,6 +79,6 @@ def get_last_n_trading_days_ohlc(symbol: str, n: int = 22):  # <-- Default to 22
         })
 
     return {
-        "symbol": symbol.upper(),
+        "symbol": symbol,
         "ohlc": result
     }

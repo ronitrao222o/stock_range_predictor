@@ -12,6 +12,8 @@ async def previous_day_ohlc(symbol: str = Query(..., description="NSE Stock code
         if not data:
             raise HTTPException(status_code=404, detail=f"Data not found for symbol '{symbol.upper()}'")
         return data
+    except HTTPException:
+        raise
     except Exception as e:
         print(f"Error fetching data for {symbol}: {e}")
         traceback.print_exc()

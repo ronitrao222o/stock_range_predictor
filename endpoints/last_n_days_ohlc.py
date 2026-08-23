@@ -35,6 +35,8 @@ async def last_n_days_ohlc(
         if not data:
             raise HTTPException(status_code=404, detail=f"No data found for symbol '{symbol.upper()}'")
         return data
+    except HTTPException:
+        raise
     except Exception as e:
         print(f"Error fetching last {n} days data for {symbol}: {e}")
         traceback.print_exc()
