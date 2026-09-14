@@ -1,9 +1,11 @@
-from datetime import date, timedelta
+import csv
+import io
 import re
+from datetime import date, datetime, timedelta
+from functools import lru_cache
 
 from fastapi import HTTPException
-from jugaad_data.nse import stock_df
-import pandas as pd
+from jugaad_data.nse.archives import full_bhavcopy_raw
 
 VALID_SYMBOL_PATTERN = re.compile(r"^[A-Z0-9&-]+$")
 
@@ -22,64 +24,70 @@ def validate_stock_symbol(symbol: str) -> str:
     return normalized_symbol
 
 
-def fetch_prepared_stock_data(symbol: str, lookback_days: int):
-    normalized_symbol = validate_stock_symbol(symbol)
-    today = date.today()
-    start = today - timedelta(days=lookback_days)
+@lru_cache(maxsize=128)
+def fetch_bhavcopy_rows(for_date: date):
+    try:
+        raw_text = full_bhavcopy_raw(for_date)
+    except Exception:
+        return []
 
-    df = stock_df(symbol=normalized_symbol, from_date=start, to_date=today, series="EQ")
-    if df.empty:
-        return normalized_symbol, None
+    if not raw_text or not raw_text.startswith("SYMBOL"):
+        return []
 
-    df["DATE"] = pd.to_datetime(df["DATE"]).dt.date
-    df_before_today = df[df["DATE"] < today]
-    if df_before_today.empty:
-        return normalized_symbol, None
-
-    return normalized_symbol, df_before_today
+    return list(csv.DictReader(io.StringIO(raw_text), skipinitialspace=True))
 
 
-def get_previous_trading_day_ohlc(symbol: str):
-    symbol, df_before_today = fetch_prepared_stock_data(symbol, lookback_days=10)
-    if df_before_today is None:
-        return None
+def get_stock_row_for_date(symbol: str, for_date: date):
+    rows = fetch_bhavcopy_rows(for_date)
+    for row in rows:
+        if row.get("SYMBOL", "").upper() == symbol and row.get("SERIES", "").upper() == "EQ":
+            return row
+    return None
 
-    prev_date = df_before_today["DATE"].max()
-    prev_rows = df_before_today[df_before_today["DATE"] == prev_date]
-    if prev_rows.empty:
-        return None
 
-    prev = prev_rows.iloc[0]
-
+def parse_archive_stock_row(symbol: str, row: dict):
+    trade_date = datetime.strptime(row["DATE1"], "%d-%b-%Y").date()
     return {
         "symbol": symbol,
-        "date": prev_date.strftime("%Y-%m-%d IST"),
-        "open": prev["OPEN"],
-        "high": prev["HIGH"],
-        "low": prev["LOW"],
-        "close": prev["CLOSE"]
+        "date": trade_date.strftime("%Y-%m-%d IST"),
+        "open": float(row["OPEN_PRICE"]),
+        "high": float(row["HIGH_PRICE"]),
+        "low": float(row["LOW_PRICE"]),
+        "close": float(row["CLOSE_PRICE"]),
     }
 
 
-def get_last_n_trading_days_ohlc(symbol: str, n: int = 22):  # <-- Default to 22
-    symbol, df_before_today = fetch_prepared_stock_data(symbol, lookback_days=n + 10)
-    if df_before_today is None:
+def get_recent_stock_rows(symbol: str, trading_days: int, buffer_days: int = 10):
+    normalized_symbol = validate_stock_symbol(symbol)
+    collected_rows = []
+    current_date = date.today() - timedelta(days=1)
+    max_days_to_check = max(trading_days + buffer_days, trading_days * 3)
+
+    for _ in range(max_days_to_check):
+        stock_row = get_stock_row_for_date(normalized_symbol, current_date)
+        if stock_row:
+            collected_rows.append(parse_archive_stock_row(normalized_symbol, stock_row))
+            if len(collected_rows) >= trading_days:
+                break
+        current_date -= timedelta(days=1)
+
+    return normalized_symbol, collected_rows
+
+
+def get_previous_trading_day_ohlc(symbol: str):
+    _, recent_rows = get_recent_stock_rows(symbol, trading_days=1)
+    if not recent_rows:
         return None
 
-    df_sorted = df_before_today.sort_values(by="DATE", ascending=False)
-    last_n_days = df_sorted.head(n)
+    return recent_rows[0]
 
-    result = []
-    for _, row in last_n_days.iterrows():
-        result.append({
-            "date": row["DATE"].strftime("%Y-%m-%d IST"),
-            "open": row["OPEN"],
-            "high": row["HIGH"],
-            "low": row["LOW"],
-            "close": row["CLOSE"]
-        })
+
+def get_last_n_trading_days_ohlc(symbol: str, n: int = 22):
+    normalized_symbol, recent_rows = get_recent_stock_rows(symbol, trading_days=n, buffer_days=10)
+    if len(recent_rows) < n:
+        return None
 
     return {
-        "symbol": symbol,
-        "ohlc": result
+        "symbol": normalized_symbol,
+        "ohlc": recent_rows
     }

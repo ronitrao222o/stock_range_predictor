@@ -15,6 +15,7 @@ import {
 
 // Import symbols from your symbols.js module
 import { symbols } from "./symbols.js"; // Adjust path if needed
+import { generatePineScript } from "./pine.js";
 
 // Firebase config and init (same as before)
 const firebaseConfig = {
@@ -40,6 +41,9 @@ const creditsDisplay = document.getElementById("credits-display");
 const creditStatus = document.getElementById("credit-status");
 const input = document.getElementById("symbol");
 const autocompleteList = document.getElementById("autocomplete-list");
+const apiBaseUrl = ["http:", "https:"].includes(window.location.protocol)
+  ? window.location.origin
+  : "http://127.0.0.1:8000";
 
 // --- Login/logout logic remains unchanged ---
 loginForm.addEventListener("submit", (e) => {
@@ -240,13 +244,13 @@ symbolForm.addEventListener("submit", async (e) => {
 
   try {
     const prevDayResponse = await fetch(
-      `https://api.productsreview.in:444/previous-day-ohlc/?symbol=${symbol}`
+      `${apiBaseUrl}/previous-day-ohlc/?symbol=${encodeURIComponent(symbol)}`
     );
     if (!prevDayResponse.ok) throw new Error("Previous day data not found");
     const prevDayData = await prevDayResponse.json();
 
     const sdResponse = await fetch(
-      `https://api.productsreview.in:444/std-deviation/?symbol=${symbol}`
+      `${apiBaseUrl}/std-deviation/?symbol=${encodeURIComponent(symbol)}`
     );
     if (!sdResponse.ok) throw new Error("Standard deviation data not found");
     const sdData = await sdResponse.json();
@@ -391,5 +395,31 @@ function showRangeScales(sdData, currentPrice) {
     ${range2InfoBox}
     ${makeScale("Range 3", three_sdl, three_sdh, "3")}
     ${range3InfoBox}
+    <div class="info-box" id="pine-script-output">
+      <h4>TradingView Pine Script</h4>
+      <p>Copy this script into TradingView's Pine Editor.</p>
+      <button type="button" id="copy-pine-btn">Copy Pine Script</button>
+      <pre id="pine-script-code"></pre>
+      <p id="copy-pine-status" role="status" aria-live="polite"></p>
+    </div>
   `;
+
+  const pineScript = generatePineScript(
+    { one_sdh, one_sdl, two_sdh, two_sdl, three_sdh, three_sdl },
+    closePrice,
+  );
+  const pineScriptCode = stockDataDiv.querySelector("#pine-script-code");
+  const copyPineButton = stockDataDiv.querySelector("#copy-pine-btn");
+  const copyPineStatus = stockDataDiv.querySelector("#copy-pine-status");
+
+  pineScriptCode.textContent = pineScript;
+  copyPineButton.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(pineScript);
+      copyPineStatus.textContent = "Pine Script copied to clipboard.";
+    } catch (error) {
+      copyPineStatus.textContent = "Copy failed. Select the script manually.";
+      console.error("Unable to copy Pine Script:", error);
+    }
+  });
 }

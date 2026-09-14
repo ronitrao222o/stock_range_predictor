@@ -4,6 +4,7 @@ A FastAPI-based API for analyzing NSE stock data and estimating price ranges usi
 
 ## Features
 
+- Firebase login with user credits and stock symbol autocomplete
 - Fetch previous trading day OHLC data
 - Fetch OHLC data for the last N trading days
 - Calculate historical daily log returns
@@ -35,9 +36,17 @@ Install dependencies:
 
 `pip install -r requirements.txt`
 
-Start the API:
+Start the application:
 
 `uvicorn main:app --reload`
+
+Open the login app at [http://127.0.0.1:8000/](http://127.0.0.1:8000/).
+The home page redirects to `/auth-web/`, the only web interface. Old `/web/`
+links also redirect to the login app.
+
+Sign in with an existing Firebase email/password account. Stock lookups in the
+interface require a Firestore `users/{uid}` document with available `credits`.
+The frontend calls the API on the same host and port.
 
 Open the API docs at:
 
