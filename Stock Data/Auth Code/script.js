@@ -49,7 +49,7 @@ const apiBaseUrl = ["http:", "https:"].includes(window.location.protocol)
 loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const email = document.getElementById("login-email").value.trim();
-  const password = document.getElementById("login-password").value.trim();
+  const password = document.getElementById("login-password").value;
 
   signInWithEmailAndPassword(auth, email, password)
     .then(() => loginForm.reset())
