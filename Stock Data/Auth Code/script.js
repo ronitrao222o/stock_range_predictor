@@ -218,7 +218,7 @@ symbolForm.addEventListener("submit", async (e) => {
   fetchBtn.textContent = "Fetching...";
 
   const symbol = input.value.trim().toUpperCase();
-  if (!symbol) {
+  if (!/^[A-Z0-9&-]+$/.test(symbol)) {
     alert("Please enter a valid NSE stock symbol.");
     fetchBtn.disabled = false;
     fetchBtn.textContent = "Fetch Data";
@@ -233,16 +233,12 @@ symbolForm.addEventListener("submit", async (e) => {
     return;
   }
 
-  const allowed = await checkAndDeductCredit(user);
-  if (!allowed) {
-    fetchBtn.disabled = false;
-    fetchBtn.textContent = "Fetch Data";
-    return;
-  }
-
-  stockDataDiv.innerHTML = "Loading data...";
-
   try {
+    const allowed = await checkAndDeductCredit(user);
+    if (!allowed) return;
+
+    stockDataDiv.textContent = "Loading data...";
+
     const prevDayResponse = await fetch(
       `${apiBaseUrl}/previous-day-ohlc/?symbol=${encodeURIComponent(symbol)}`
     );
@@ -257,7 +253,10 @@ symbolForm.addEventListener("submit", async (e) => {
 
     renderPriceInputForm(prevDayData, sdData);
   } catch (error) {
-    stockDataDiv.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+    const errorMessage = document.createElement("p");
+    errorMessage.style.color = "red";
+    errorMessage.textContent = `Error: ${error.message}`;
+    stockDataDiv.replaceChildren(errorMessage);
   } finally {
     fetchBtn.disabled = false;
     fetchBtn.textContent = "Fetch Data";
