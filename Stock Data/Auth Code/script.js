@@ -45,15 +45,29 @@ const apiBaseUrl = ["http:", "https:"].includes(window.location.protocol)
   ? window.location.origin
   : "http://127.0.0.1:8000";
 
-// --- Login/logout logic remains unchanged ---
-loginForm.addEventListener("submit", (e) => {
+loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
+  const loginButton = loginForm.querySelector('button[type="submit"]');
+  const loginError = document.getElementById("login-error");
+  if (loginButton.disabled) return;
+
   const email = document.getElementById("login-email").value.trim();
   const password = document.getElementById("login-password").value;
+  loginError.hidden = true;
+  loginError.textContent = "";
+  loginButton.disabled = true;
+  loginButton.textContent = "Signing in...";
 
-  signInWithEmailAndPassword(auth, email, password)
-    .then(() => loginForm.reset())
-    .catch((error) => alert("Login failed: " + error.message));
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    loginForm.reset();
+  } catch (error) {
+    loginError.textContent = "Login failed: " + error.message;
+    loginError.hidden = false;
+  } finally {
+    loginButton.disabled = false;
+    loginButton.textContent = "Login";
+  }
 });
 
 logoutBtn.addEventListener("click", () => {
