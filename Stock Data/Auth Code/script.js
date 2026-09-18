@@ -285,7 +285,7 @@ function renderPriceInputForm(prevDayData, sdData) {
     <p><strong>Yesterday's Closing Price:</strong> ₹${close}</p>
     <form id="price-form">
       <label for="current-price">Enter Current Stock Price (optional):</label>
-      <input type="number" id="current-price" step="0.01" placeholder="Leave blank to use ₹${close}" />
+      <input type="number" id="current-price" min="0.01" step="0.01" placeholder="Leave blank to use ₹${close}" />
       <button type="submit">Show Range Details</button>
     </form>
     <div id="range-display"></div>
@@ -296,9 +296,9 @@ function renderPriceInputForm(prevDayData, sdData) {
   document.getElementById("price-form").addEventListener("submit", (e) => {
     e.preventDefault();
     const priceInput = document.getElementById("current-price").value.trim();
-    const currentPrice = priceInput === "" ? close : parseFloat(priceInput);
-    if (isNaN(currentPrice)) {
-      alert("Invalid price entered.");
+    const currentPrice = priceInput === "" ? close : Number(priceInput);
+    if (!Number.isFinite(currentPrice) || currentPrice <= 0) {
+      alert("Please enter a valid stock price greater than zero.");
       return;
     }
     showRangeScales(sdData, currentPrice);
