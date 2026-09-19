@@ -195,6 +195,12 @@ input.addEventListener("input", function () {
 });
 
 input.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") {
+    closeAllLists();
+    currentFocus = -1;
+    return;
+  }
+
   const items = autocompleteList.getElementsByTagName("div");
   if (!items.length) return;
 
@@ -206,11 +212,9 @@ input.addEventListener("keydown", function (e) {
     currentFocus--;
     currentFocus = addActive(items, currentFocus);
     e.preventDefault();
-  } else if (e.key === "Enter") {
+  } else if (e.key === "Enter" && currentFocus > -1 && items[currentFocus]) {
     e.preventDefault();
-    if (currentFocus > -1) {
-      if (items[currentFocus]) items[currentFocus].click();
-    }
+    items[currentFocus].click();
   }
 });
 
