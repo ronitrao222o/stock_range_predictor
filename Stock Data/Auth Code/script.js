@@ -232,6 +232,8 @@ symbolForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const fetchBtn = symbolForm.querySelector("button");
+  if (fetchBtn.disabled) return;
+
   fetchBtn.disabled = true;
   fetchBtn.textContent = "Fetching...";
 
@@ -252,6 +254,7 @@ symbolForm.addEventListener("submit", async (e) => {
   }
 
   try {
+    closeAllLists();
     const allowed = await checkAndDeductCredit(user);
     if (!allowed) return;
 
