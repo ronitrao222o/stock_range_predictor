@@ -341,7 +341,8 @@ function showRangeScales(sdData, currentPrice) {
 
   const makeScale = (label, low, high, id) => {
     const clampedPrice = Math.min(Math.max(currentPrice, low), high);
-    const percent = ((high - clampedPrice) / (high - low)) * 100;
+    const rangeWidth = high - low;
+    const percent = rangeWidth === 0 ? 50 : ((high - clampedPrice) / rangeWidth) * 100;
     const inRange = currentPrice >= low && currentPrice <= high;
     const fromHigh = (high - currentPrice).toFixed(2);
     const fromLow = (currentPrice - low).toFixed(2);
