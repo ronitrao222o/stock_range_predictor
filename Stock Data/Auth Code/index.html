@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Stock Deviation Viewer</title>
+  <title>Stock Range Predictor</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
     /* Basic autocomplete dropdown styles */
@@ -49,12 +49,12 @@
 
     <!-- Credit Display -->
     <p id="credits-display" style="display:none;">Credits: --</p>
-    <p id="credit-status" style="color: green; margin-top: 5px; display: none;"></p>
+    <p id="credit-status" role="status" aria-live="polite" style="color: green; margin-top: 5px; display: none;"></p>
 
     <!-- Stock Symbol Input -->
 <form id="symbol-form" style="display:none; position: relative;">
   <label for="symbol">Enter NSE Stock Symbol:</label>
-  <input type="text" id="symbol" name="symbol" required placeholder="e.g., INFY" autocomplete="off" />
+  <input type="text" id="symbol" name="symbol" required placeholder="e.g., INFY" autocomplete="off" spellcheck="false" autocapitalize="characters" />
   <div id="autocomplete-list" class="autocomplete-items"></div>
   <button type="submit">Fetch Data</button>
 </form>
