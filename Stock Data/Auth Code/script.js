@@ -308,17 +308,14 @@ function renderPriceInputForm(prevDayData, sdData) {
       alert("Please enter a valid stock price greater than zero.");
       return;
     }
-    showRangeScales(sdData, currentPrice);
+    showRangeScales(sdData, currentPrice, close);
   });
 
-  showRangeScales(sdData, close);
+  showRangeScales(sdData, close, close);
 }
 
-function showRangeScales(sdData, currentPrice) {
+function showRangeScales(sdData, currentPrice, closePrice) {
   const { one_sdh, one_sdl, two_sdh, two_sdl, three_sdh, three_sdl } = sdData;
-
-  // Close price fallback for Range 1 info box calculations
-  const closePrice = sdData.close ?? currentPrice;
 
   // Range 1 drawing levels
   const H100 = one_sdh.toFixed(2);
