@@ -45,6 +45,16 @@ const apiBaseUrl = ["http:", "https:"].includes(window.location.protocol)
   ? window.location.origin
   : "http://127.0.0.1:8000";
 
+const passwordInput = document.getElementById("login-password");
+const togglePasswordButton = document.getElementById("toggle-password");
+
+togglePasswordButton.addEventListener("click", () => {
+  const showPassword = passwordInput.type === "password";
+  passwordInput.type = showPassword ? "text" : "password";
+  togglePasswordButton.textContent = showPassword ? "Hide password" : "Show password";
+  togglePasswordButton.setAttribute("aria-pressed", String(showPassword));
+});
+
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const loginButton = loginForm.querySelector('button[type="submit"]');
@@ -61,6 +71,9 @@ loginForm.addEventListener("submit", async (e) => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
     loginForm.reset();
+    passwordInput.type = "password";
+    togglePasswordButton.textContent = "Show password";
+    togglePasswordButton.setAttribute("aria-pressed", "false");
   } catch (error) {
     loginError.textContent = "Login failed: " + error.message;
     loginError.hidden = false;
