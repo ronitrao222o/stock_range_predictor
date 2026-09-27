@@ -83,8 +83,19 @@ loginForm.addEventListener("submit", async (e) => {
   }
 });
 
-logoutBtn.addEventListener("click", () => {
-  signOut(auth).catch((error) => alert("Logout failed: " + error.message));
+logoutBtn.addEventListener("click", async () => {
+  if (logoutBtn.disabled) return;
+
+  logoutBtn.disabled = true;
+  logoutBtn.textContent = "Signing out...";
+  try {
+    await signOut(auth);
+  } catch (error) {
+    alert("Logout failed: " + error.message);
+  } finally {
+    logoutBtn.disabled = false;
+    logoutBtn.textContent = "Logout";
+  }
 });
 
 onAuthStateChanged(auth, async (user) => {
