@@ -251,6 +251,18 @@ document.addEventListener("click", function (e) {
 
 // ------------- END AUTOCOMPLETE ----------------
 
+async function getApiErrorMessage(response, fallback) {
+  try {
+    const body = await response.json();
+    if (typeof body?.detail === "string" && body.detail.trim()) {
+      return body.detail;
+    }
+  } catch {
+    // A proxy or server may return an HTML error instead of JSON.
+  }
+  return fallback;
+}
+
 // Symbol form submit logic (same as before)
 symbolForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -287,13 +299,17 @@ symbolForm.addEventListener("submit", async (e) => {
     const prevDayResponse = await fetch(
       `${apiBaseUrl}/previous-day-ohlc/?symbol=${encodeURIComponent(symbol)}`
     );
-    if (!prevDayResponse.ok) throw new Error("Previous day data not found");
+    if (!prevDayResponse.ok) {
+      throw new Error(await getApiErrorMessage(prevDayResponse, "Unable to fetch previous day data. Please try again."));
+    }
     const prevDayData = await prevDayResponse.json();
 
     const sdResponse = await fetch(
       `${apiBaseUrl}/std-deviation/?symbol=${encodeURIComponent(symbol)}`
     );
-    if (!sdResponse.ok) throw new Error("Standard deviation data not found");
+    if (!sdResponse.ok) {
+      throw new Error(await getApiErrorMessage(sdResponse, "Unable to fetch the price range. Please try again."));
+    }
     const sdData = await sdResponse.json();
 
     renderPriceInputForm(prevDayData, sdData);
