@@ -178,6 +178,7 @@ function addActive(items, index) {
   if (index >= items.length) index = 0;
   if (index < 0) index = items.length - 1;
   items[index].classList.add("autocomplete-active");
+  items[index].scrollIntoView({ block: "nearest" });
   return index;
 }
 
