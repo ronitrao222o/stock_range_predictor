@@ -330,10 +330,10 @@ function renderPriceInputForm(prevDayData, sdData) {
   const html = `
     <h2>${symbol} — Today's Trading Range</h2>
     <p><strong>Closing Date:</strong> ${date}</p>
-    <p><strong>Yesterday's Closing Price:</strong> ₹${close}</p>
+    <p><strong>Last Trading Day's Closing Price:</strong> ₹${close.toFixed(2)}</p>
     <form id="price-form">
       <label for="current-price">Enter Current Stock Price (optional):</label>
-      <input type="number" id="current-price" min="0.01" step="0.01" placeholder="Leave blank to use ₹${close}" />
+      <input type="number" id="current-price" min="0.01" step="0.01" placeholder="Leave blank to use ₹${close.toFixed(2)}" />
       <button type="submit">Show Range Details</button>
     </form>
     <div id="range-display"></div>
@@ -390,13 +390,13 @@ function showRangeScales(sdData, currentPrice, closePrice) {
       <div class="range-block" id="range-${id}">
         <h3>${label} <span class="range-status">(${status})</span></h3>
         <div class="scale-bar">
-          <span class="label high-label">₹${high}</span>
+          <span class="label high-label">₹${high.toFixed(2)}</span>
           <div class="scale-track">
             <div class="covered-bar" style="width: ${percent}%;"></div>
             <div class="current-marker" style="left: ${percent}%;"
               title="Current Price: ₹${clampedPrice.toFixed(2)}"></div>
           </div>
-          <span class="label low-label">₹${low}</span>
+          <span class="label low-label">₹${low.toFixed(2)}</span>
         </div>
         <p>
           📉 From High: ₹${fromHigh} <br>
