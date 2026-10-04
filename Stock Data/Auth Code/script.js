@@ -104,8 +104,14 @@ onAuthStateChanged(auth, async (user) => {
     logoutBtn.style.display = "inline-block";
     symbolForm.style.display = "block";
     creditsDisplay.style.display = "block";
-    await showCredits(user);
-    stockDataDiv.innerHTML = "Please enter a symbol to view today's trading range.";
+    creditsDisplay.textContent = "Credits: loading...";
+    try {
+      await showCredits(user);
+      stockDataDiv.textContent = "Please enter a symbol to view today's trading range.";
+    } catch {
+      creditsDisplay.textContent = "Credits: unavailable";
+      stockDataDiv.textContent = "Unable to load your credits. Please check your connection and try a stock lookup again.";
+    }
   } else {
     loginContainer.style.display = "block";
     logoutBtn.style.display = "none";
