@@ -22,23 +22,42 @@ A FastAPI-based API for analyzing NSE stock data and estimating price ranges usi
 
 ## API Endpoints
 
-- Previous Day OHLC
-- Last N Trading Days OHLC
-- Standard Deviation Price Range
+| Method | Example Path | Description |
+| --- | --- | --- |
+| GET | `/health` | Returns `{"status": "ok"}` |
+| GET | `/previous-day-ohlc/?symbol=INFY` | Previous trading day OHLC |
+| GET | `/last-n-days-ohlc/?symbol=INFY&n=22` | OHLC for the last N trading days |
+| GET | `/std-deviation/?symbol=INFY` | 1, 2, and 3 standard deviation price ranges |
+
+Stock endpoints require a `symbol`. The `n` parameter defaults to 22 and accepts
+values from 1 to 90. Standard deviation calculations require 22 trading days of data.
 
 ## Run Locally
 
-Clone the repository:
+Clone the repository and enter the project folder:
 
-`git clone https://github.com/ronitrao222o/stock_range_predictor.git`
+```sh
+git clone https://github.com/ronitrao222o/stock_range_predictor.git
+cd stock_range_predictor
+```
 
-Install dependencies:
+Create and activate a virtual environment (macOS/Linux):
 
-`pip install -r requirements.txt`
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+On Windows PowerShell, use `py -m venv .venv` followed by
+`.\.venv\Scripts\Activate.ps1`.
+
+Install dependencies in the activated environment:
+
+`python -m pip install -r requirements.txt`
 
 Start the application:
 
-`uvicorn main:app --reload`
+`python -m uvicorn main:app --reload`
 
 Open the login app at [http://127.0.0.1:8000/](http://127.0.0.1:8000/).
 The home page redirects to `/auth-web/`, the only web interface. Old `/web/`
