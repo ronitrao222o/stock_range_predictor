@@ -341,11 +341,16 @@ function renderPriceInputForm(prevDayData, sdData) {
       <label for="current-price">Enter Current Stock Price (optional):</label>
       <input type="number" id="current-price" min="0.01" step="0.01" inputmode="decimal" placeholder="Leave blank to use ₹${close.toFixed(2)}" />
       <button type="submit">Show Range Details</button>
+      <button type="reset">Use Closing Price</button>
     </form>
     <div id="range-display"></div>
   `;
 
   stockDataDiv.innerHTML = html;
+
+  document.getElementById("price-form").addEventListener("reset", () => {
+    showRangeScales(sdData, close, close);
+  });
 
   document.getElementById("price-form").addEventListener("submit", (e) => {
     e.preventDefault();
