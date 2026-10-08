@@ -208,12 +208,16 @@ input.addEventListener("input", function () {
     ) {
       const item = document.createElement("div");
       // Highlight matched part of symbol
-      const symbolHighlight = `<strong>${symbol.substr(0, val.length)}</strong>${symbol.substr(val.length)}`;
+      const symbolHighlight = symbol.startsWith(val)
+        ? `<strong>${symbol.slice(0, val.length)}</strong>${symbol.slice(val.length)}`
+        : symbol;
       item.innerHTML = `${symbolHighlight} — ${name}`;
       item.classList.add("autocomplete-item");
       item.addEventListener("click", () => {
         input.value = symbol;
         closeAllLists();
+        currentFocus = -1;
+        input.focus();
       });
       fragment.appendChild(item);
       count++;
