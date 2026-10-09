@@ -55,6 +55,12 @@ togglePasswordButton.addEventListener("click", () => {
   togglePasswordButton.setAttribute("aria-pressed", String(showPassword));
 });
 
+loginForm.addEventListener("input", () => {
+  const loginError = document.getElementById("login-error");
+  loginError.hidden = true;
+  loginError.textContent = "";
+});
+
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const loginButton = loginForm.querySelector('button[type="submit"]');
