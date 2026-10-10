@@ -61,6 +61,24 @@ loginForm.addEventListener("input", () => {
   loginError.textContent = "";
 });
 
+function getLoginErrorMessage(error) {
+  switch (error?.code) {
+    case "auth/invalid-credential":
+    case "auth/invalid-login-credentials":
+    case "auth/user-not-found":
+    case "auth/wrong-password":
+      return "Email or password is incorrect. Please try again.";
+    case "auth/invalid-email":
+      return "Please enter a valid email address.";
+    case "auth/network-request-failed":
+      return "Unable to connect. Check your internet connection and try again.";
+    case "auth/too-many-requests":
+      return "Too many sign-in attempts. Please wait a while and try again.";
+    default:
+      return "Unable to sign in. Please try again or contact support.";
+  }
+}
+
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const loginButton = loginForm.querySelector('button[type="submit"]');
@@ -81,7 +99,7 @@ loginForm.addEventListener("submit", async (e) => {
     togglePasswordButton.textContent = "Show password";
     togglePasswordButton.setAttribute("aria-pressed", "false");
   } catch (error) {
-    loginError.textContent = "Login failed: " + error.message;
+    loginError.textContent = getLoginErrorMessage(error);
     loginError.hidden = false;
   } finally {
     loginButton.disabled = false;
