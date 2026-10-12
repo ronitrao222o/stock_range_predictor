@@ -177,10 +177,13 @@ async function checkAndDeductCredit(user) {
   return true;
 }
 
+let creditStatusTimeout;
+
 function showCreditStatus(message) {
+  clearTimeout(creditStatusTimeout);
   creditStatus.textContent = message;
   creditStatus.style.display = "block";
-  setTimeout(() => {
+  creditStatusTimeout = setTimeout(() => {
     creditStatus.style.display = "none";
   }, 5000);
 }
