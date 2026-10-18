@@ -142,6 +142,9 @@ onAuthStateChanged(auth, async (user) => {
     symbolForm.style.display = "none";
     creditsDisplay.style.display = "none";
     creditStatus.style.display = "none";
+    input.value = "";
+    closeAllLists();
+    currentFocus = -1;
     stockDataDiv.innerHTML = "Please log in to view today's trading range.";
   }
 });
@@ -234,11 +237,14 @@ input.addEventListener("input", function () {
       count < maxResults
     ) {
       const item = document.createElement("div");
-      // Highlight matched part of symbol
-      const symbolHighlight = symbol.startsWith(val)
-        ? `<strong>${symbol.slice(0, val.length)}</strong>${symbol.slice(val.length)}`
-        : symbol;
-      item.innerHTML = `${symbolHighlight} — ${name}`;
+      if (symbol.startsWith(val)) {
+        const highlight = document.createElement("strong");
+        highlight.textContent = symbol.slice(0, val.length);
+        item.append(highlight, symbol.slice(val.length));
+      } else {
+        item.append(symbol);
+      }
+      item.append(` — ${name}`);
       item.classList.add("autocomplete-item");
       item.addEventListener("click", () => {
         input.value = symbol;
