@@ -232,10 +232,8 @@ input.addEventListener("input", function () {
 
   let count = 0;
   for (const { symbol, name } of symbols) {
-    if (
-      (symbol.startsWith(val) || name.toUpperCase().includes(val)) &&
-      count < maxResults
-    ) {
+    if (count >= maxResults) break;
+    if (symbol.startsWith(val) || name.toUpperCase().includes(val)) {
       const item = document.createElement("div");
       if (symbol.startsWith(val)) {
         const highlight = document.createElement("strong");

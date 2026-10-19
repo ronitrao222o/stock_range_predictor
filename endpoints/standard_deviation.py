@@ -68,7 +68,7 @@ async def std_deviation(
         three_sdl = round_to_nearest_0_05(prev_close * math.exp(avg_return - 3 * std_dev))
 
         return {
-            "symbol": symbol.upper(),
+            "symbol": ohlc_data["symbol"],
             "average_return_percent": avg_pct,
             "std_dev_percent": std_pct,
             "one_sd_high_percent": one_sd_high_pct,
