@@ -136,6 +136,7 @@ onAuthStateChanged(auth, async (user) => {
       creditsDisplay.textContent = "Credits: unavailable";
       stockDataDiv.textContent = "Unable to load your credits. Please check your connection and try a stock lookup again.";
     }
+    input.focus();
   } else {
     loginContainer.style.display = "block";
     logoutBtn.style.display = "none";
@@ -146,6 +147,7 @@ onAuthStateChanged(auth, async (user) => {
     closeAllLists();
     currentFocus = -1;
     stockDataDiv.innerHTML = "Please log in to view today's trading range.";
+    document.getElementById("login-email").focus();
   }
 });
 
