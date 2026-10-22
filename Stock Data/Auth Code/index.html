@@ -5,30 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Stock Range Predictor</title>
   <link rel="stylesheet" href="styles.css" />
-  <style>
-    /* Basic autocomplete dropdown styles */
-    #autocomplete-list {
-      position: absolute;
-      border: 1px solid #d4d4d4;
-      border-bottom: none;
-      border-top: none;
-      z-index: 99;
-      top: 100%;
-      left: 0;
-      right: 0;
-      max-height: 200px;
-      overflow-y: auto;
-      background: white;
-    }
-    #autocomplete-list div {
-      padding: 10px;
-      cursor: pointer;
-      border-bottom: 1px solid #d4d4d4;
-    }
-    #autocomplete-list div:hover {
-      background-color: #e9e9e9;
-    }
-  </style>
 </head>
 <body>
   <div class="container">
@@ -54,10 +30,12 @@
     <p id="credit-status" role="status" aria-live="polite" style="color: green; margin-top: 5px; display: none;"></p>
 
     <!-- Stock Symbol Input -->
-<form id="symbol-form" style="display:none; position: relative;">
+<form id="symbol-form" style="display:none;">
   <label for="symbol">Enter NSE Stock Symbol:</label>
-  <input type="text" id="symbol" name="symbol" required placeholder="e.g., INFY" autocomplete="off" spellcheck="false" autocapitalize="characters" />
-  <div id="autocomplete-list" class="autocomplete-items"></div>
+  <div class="symbol-input-wrap">
+    <input type="text" id="symbol" name="symbol" required placeholder="e.g., INFY" autocomplete="off" spellcheck="false" autocapitalize="characters" />
+    <div id="autocomplete-list" class="autocomplete-items"></div>
+  </div>
   <button type="submit">Fetch Data</button>
 </form>
 

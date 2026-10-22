@@ -83,8 +83,19 @@ body {
   box-shadow: 0 0 4px rgba(0, 123, 255, 0.7);
   pointer-events: none;
 }
+.symbol-input-wrap {
+  position: relative;
+}
+
+#symbol {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .autocomplete-items {
   position: absolute;
+  top: 100%;
+  left: 0;
   border: 1px solid #d4d4d4;
   border-top: none;
   max-height: 200px;
@@ -92,6 +103,7 @@ body {
   z-index: 99;
   background: white;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .autocomplete-item {
