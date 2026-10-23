@@ -33,7 +33,7 @@ async def last_n_days_ohlc(
     try:
         data = get_last_n_trading_days_ohlc(symbol, n=n)
         if not data:
-            raise HTTPException(status_code=404, detail=f"No data found for symbol '{symbol.upper()}'")
+            raise HTTPException(status_code=404, detail=f"No data found for symbol '{symbol.strip().upper()}'")
         return data
     except HTTPException:
         raise

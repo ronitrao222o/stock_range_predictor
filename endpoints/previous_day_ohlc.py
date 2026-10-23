@@ -10,7 +10,7 @@ async def previous_day_ohlc(symbol: str = Query(..., description="NSE Stock code
     try:
         data = get_previous_trading_day_ohlc(symbol)
         if not data:
-            raise HTTPException(status_code=404, detail=f"Data not found for symbol '{symbol.upper()}'")
+            raise HTTPException(status_code=404, detail=f"Data not found for symbol '{symbol.strip().upper()}'")
         return data
     except HTTPException:
         raise
